@@ -1,0 +1,10 @@
+from enum import Enum
+class roundsEnum(Enum):
+    EQUIPE1DESARMA = 1
+    EQUIPE1DETONA = 2
+    EQUIPE1ELIMINA = 3
+    EQUIPE1TEMPO = 4
+    EQUIPE2DESARMA = 5
+    EQUIPE2DETONA = 6
+    EQUIPE2ELIMINA = 7
+    EQUIPE2TEMPO = 8
