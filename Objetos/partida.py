@@ -1,38 +1,40 @@
+#import Performace
+import Objetos.Stats as Stats
+#import Economy
 
-import Objetos.stats as stats
-import economy
-import performace
-
-class partida():
+class Partida():
     def __init__(
             self,
             nomePrimeiroTime,
             nomeSegundoTime,
             rounds, #Uma lista de enums criada pela função tranforma_rounds
-            mapa,
+            tipoPartida,
+            mapa, #Lista de mapas
             matrizStatsPrimeiroTime,
             matrizStatsSegundoTime,
             matrizeconomiaPrimeiroTime,
             matrizeconomiaSegundoTime,
             matrizDesempenhoPrimeiroTime,
             matrizDesempenhoSegundoTime,
-            
-            dataPartida #trabalhar com um tipo de data
+            dataPartida, #trabalhar com um tipo de data
+            patch
             ):
         self.nomePrimeiroTime = nomePrimeiroTime
         self.nomeSegundoTime = nomeSegundoTime
         self.rounds = rounds
+        self.tipoPartida = tipoPartida
         self.mapa = mapa
-        self.statsPrimeiroTime = stats(matrizStatsPrimeiroTime)
-        self.statsSegundoTime = stats(matrizStatsSegundoTime)
+        self.statsPrimeiroTime = Stats(matrizStatsPrimeiroTime)
+        self.statsSegundoTime = Stats(matrizStatsSegundoTime)
 
-        self.economiaPrimeiroTime = economy(matrizeconomiaPrimeiroTime)
-        self.economiaSegundoTime = economy(matrizeconomiaSegundoTime)
+        # self.economiaPrimeiroTime = Economy(matrizeconomiaPrimeiroTime)
+        # self.economiaSegundoTime = Economy(matrizeconomiaSegundoTime)
 
-        self.statsPrimeiroTime = performace(matrizDesempenhoPrimeiroTime)
-        self.statsSegundoTime = performace(matrizDesempenhoSegundoTime)
+        # self.statsPrimeiroTime = Performace(matrizDesempenhoPrimeiroTime)
+        # self.statsSegundoTime = Performace(matrizDesempenhoSegundoTime)
 
         self.dataPartida = dataPartida
+        self.patch = patch
         
 
     @property
@@ -73,7 +75,7 @@ class partida():
 
     @stats_primeiro_time.setter
     def stats_primeiro_time(self, value):
-        self._stats_primeiro_time = stats(value)
+        self._stats_primeiro_time = Stats(value)
 
     @property
     def stats_segundo_time(self):
@@ -81,7 +83,7 @@ class partida():
 
     @stats_segundo_time.setter
     def stats_segundo_time(self, value):
-        self._stats_segundo_time = stats(value)
+        self._stats_segundo_time = Stats(value)
 
     @property
     def data_partida(self):
@@ -90,3 +92,11 @@ class partida():
     @data_partida.setter
     def data_partida(self, value):
         self._data_partida = value
+    
+    @property
+    def patch(self):
+        return self._patch
+
+    @patch.setter
+    def patch(self, value):
+        self._patch = value

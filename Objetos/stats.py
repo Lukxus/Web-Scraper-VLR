@@ -1,4 +1,4 @@
-class stats():
+class Stats():
     def __init__(self, matrizDesempenho):
         self.stats = {}
         self.economy = {}

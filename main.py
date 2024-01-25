@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-num_paginas = 5
+num_paginas = 1
 
 
 lista_acessos_total = utils.le_paginas(os.getenv("BASE_URL"), num_paginas)
