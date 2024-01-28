@@ -1,9 +1,10 @@
 import requests
-import Enums.roundsEnum as roundsEnum
+from Enums.TipoPartida import TipoPartida
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 import Objetos.Partida as Partida
+
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ def le_retangulos(url_pagina):
     for link in soup_pagina.find_all('a', class_=["wf-module-item", "match-item", "mod-color", "mod-left", "mod-bg-after-green"]):
         href = link.get('href')
         url_partida = f"{os.getenv('COMPLEMENTO_URL')}{href}"
+        print("url_partida",url_partida)
         le_partidas(url_partida)
     
     return lista_urls_partidas
@@ -49,17 +51,33 @@ def le_partidas(url_partida):
     #Pegando nome dos times da partida
     nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
 
+    #Peagndo tipo da partida
+    tipo_partida = busca_tipo_partida(soup_partida)
+    print(tipo_partida)
     #Uma partida pode ter mais de um mapa; Assim eh necessario
     #percorrer cada DIV que possui a classe 'vm-stats-gamesnav-item js-map-switch mod-active'
 
     #Pegando Mapas
-    mapas = busca_mapas(soup_partida)
+    mapas = busca_mapas(soup_partida, tipo_partida)
     print(mapas)
     #Acessando Overview
+    exit(0)
 
 
     #Pegando rounds da partida
-    # busca_rounds(soup_partida)
+    rounds = busca_rounds(soup_partida)
+
+def busca_tipo_partida(soup_partida):
+    div_tipoPartida = soup_partida.find_all('div', class_= 'match-header-vs-note')
+    valor_obtido = div_tipoPartida[1].text.strip()
+    valor_enum = None
+    if valor_obtido == "Bo1":
+        valor_enum = TipoPartida.BO1.value
+    elif valor_obtido == "Bo2":
+        valor_enum = TipoPartida.BO2.value
+    elif valor_obtido == "Bo3":
+        valor_enum = TipoPartida.BO3.value
+    return valor_enum
 
 def busca_nome_times(soup_partida):
     listaNomes = [nome.text.strip() for nome in soup_partida.find_all('div', class_=["wf-title-med"])]
@@ -72,21 +90,29 @@ def busca_nome_times(soup_partida):
 matriz_resultados pois ela guarda a informações sobre os logos de cada time
 """
 def busca_rounds(soup_partida):
-    matriz_resultados_mapa = soup_partida.find_all('div', class_="map")
+    
     matriz_resultados = soup_partida.find_all('div', class_=lambda x: x and 'vlr-rounds-row-col' in x.split())
-    matriz_resultados_transformada = tranforma_rounds(matriz_resultados)
+    print(matriz_resultados)
+    
     
 
-def busca_mapas(soup_partida):  
-    barraMapas = soup_partida.find_all('div', class_= "vm-stats-gamesnav-container")
-    barraMapas = barraMapas[0]
-    barraMapasAux = barraMapas.find_all('div', class_=["vm-stats-gamesnav", "noselect"])
-    barraMapasAux = barraMapasAux[0]
-    mapasDiv =  barraMapasAux.find_all('div', class_=["vm-stats-gamesnav-item", "js-map-switch"])
-    mapas = []
-    for i in range(1, len(mapasDiv)):
-        mapas.append(mapasDiv[i].find("div").get_text(strip=True)[1:]) 
-        #precisei colocar esse [1:] para não pegar o primeiro elemento pois um elemento span estava colocando o texto dele junto
+def busca_mapas(soup_partida, tipo_partida):
+    mapas = []  
+    if tipo_partida > 1:
+        barraMapas = soup_partida.find_all('div', class_= "vm-stats-gamesnav-container")
+        barraMapas = barraMapas[0]
+        barraMapasAux = barraMapas.find_all('div', class_=["vm-stats-gamesnav", "noselect"])
+        barraMapasAux = barraMapasAux[0]
+        mapasDiv =  barraMapasAux.find_all('div', class_=["vm-stats-gamesnav-item", "js-map-switch"])
+        for i in range(1, len(mapasDiv)):
+            mapas.append(mapasDiv[i].find("div").get_text(strip=True)[1:]) 
+            #precisei colocar esse [1:] para não pegar o primeiro elemento pois um elemento span estava colocando o texto dele junto
+    else:
+        mapasDiv =  soup_partida.find_all('div', class_="map")
+        mapasDiv =  mapasDiv[0]
+        mapasAux = mapasDiv.find_all('div', style="font-weight: 700; font-size: 20px; text-align: center; position: relative; margin-bottom: 3px;")
+        mapasAux = mapasAux[0]
+        mapas.append(mapasAux.text.strip())
     return mapas
 
 def tranforma_rounds(matriz_resultados):
