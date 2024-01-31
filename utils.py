@@ -1,5 +1,6 @@
 import requests
 from Enums.TipoPartida import TipoPartida
+from Enums.RoundsEnum import RoundsEnum
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
@@ -51,7 +52,7 @@ def le_partidas(url_partida):
     #Pegando nome dos times da partida
     nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
 
-    #Peagndo tipo da partida
+    #Pegando tipo da partida
     tipo_partida = busca_tipo_partida(soup_partida)
     print(tipo_partida)
     #Uma partida pode ter mais de um mapa; Assim eh necessario
@@ -61,11 +62,11 @@ def le_partidas(url_partida):
     mapas = busca_mapas(soup_partida, tipo_partida)
     print(mapas)
     #Acessando Overview
-    exit(0)
-
-
+    
     #Pegando rounds da partida
-    rounds = busca_rounds(soup_partida)
+    rounds = busca_rounds(soup_partida, tipo_partida)
+    print(rounds)
+    exit(1)
 
 def busca_tipo_partida(soup_partida):
     div_tipoPartida = soup_partida.find_all('div', class_= 'match-header-vs-note')
@@ -73,10 +74,10 @@ def busca_tipo_partida(soup_partida):
     valor_enum = None
     if valor_obtido == "Bo1":
         valor_enum = TipoPartida.BO1.value
-    elif valor_obtido == "Bo2":
-        valor_enum = TipoPartida.BO2.value
     elif valor_obtido == "Bo3":
         valor_enum = TipoPartida.BO3.value
+    elif valor_obtido == "Bo5":
+        valor_enum = TipoPartida.BO5.value
     return valor_enum
 
 def busca_nome_times(soup_partida):
@@ -84,17 +85,6 @@ def busca_nome_times(soup_partida):
     print(listaNomes)
     print("----------------------------")
     return listaNomes[0], listaNomes[1]
-
-"""
-É necessario desconsiderar a primeira posição da 
-matriz_resultados pois ela guarda a informações sobre os logos de cada time
-"""
-def busca_rounds(soup_partida):
-    
-    matriz_resultados = soup_partida.find_all('div', class_=lambda x: x and 'vlr-rounds-row-col' in x.split())
-    print(matriz_resultados)
-    
-    
 
 def busca_mapas(soup_partida, tipo_partida):
     mapas = []  
@@ -115,39 +105,79 @@ def busca_mapas(soup_partida, tipo_partida):
         mapas.append(mapasAux.text.strip())
     return mapas
 
-def tranforma_rounds(matriz_resultados):
-    matriz_resultados = matriz_resultados[1:] # Remove o primeiro
-    matriz_resultados_transformada = []
-    for coluna in matriz_resultados:
-        res = coluna.find_all('div', class_=["rnd-sq"])
-        if res:
-            print(res[0])
-            print(res[1])
-        else:
-            print("lista vazia")
-        #print(res)
-        print("-------------------------------------")
-    exit(0)
+
+"""
+É necessario desconsiderar a primeira posição da 
+matriz_resultados pois ela guarda a informações sobre os logos de cada time
+"""
+def busca_rounds(soup_partida, tipo_partida):
+    lista_rounds = []
+    div_colunas_aux = soup_partida.find_all('div', class_='vlr-rounds-row-col')
+    div_colunas = []
+    for element in div_colunas_aux:
+        if element.has_attr("title"):
+            div_colunas.append(element)
+    for i in div_colunas:
+        vazio_tag = i.find('div', class_='rnd-sq')
+        img_tag = i.find('div', class_='rnd-sq mod-win mod-ct') or i.find('div', class_='rnd-sq mod-win mod-t')
+        if vazio_tag and img_tag:
+            result = img_tag.find('img')
+            if i.index(vazio_tag) < i.index(img_tag):
+                lista_rounds.append(["", result])
+            else:
+                lista_rounds.append([result, ""])
+    if tipo_partida != 1:
+        lista_scores = [element.text for element in soup_partida.find_all('div', class_='score')]
+        res = []
+        for i in range(0, len(lista_scores), 2):
+            res.append(lista_rounds[:(int(lista_scores[i]) + int(lista_scores[i+1]))])
+            lista_rounds = lista_rounds[:(int(lista_scores[i]) + int(lista_scores[i+1]))]
+        lista_rounds = res[:]
+    return tranforma_rounds(lista_rounds, tipo_partida)
 
 
-# def tranforma_rounds(matriz):
-#    lista_rounds = [] 
-#    for element in matriz:
-#         if element[0] == None:
-#             if element[0] == "defuse":
-#                 lista_rounds.append(roundsEnum.EQUIPE1DESARMA)
-#             elif element[0] == "boom":
-#                 lista_rounds.append(roundsEnum.EQUIPE1DETONA)
-#             elif element[0] == "time":
-#                 lista_rounds.append(roundsEnum.EQUIPE1TEMPO)
-#             elif element[0] == "elim":
-#                 lista_rounds.append(roundsEnum.EQUIPE1ELIMINA)
-#         else:
-#             if element[0] == "defuse":
-#                 lista_rounds.append(roundsEnum.EQUIPE2DESARMA)
-#             elif element[0] == "boom":
-#                 lista_rounds.append(roundsEnum.EQUIPE2DETONA)
-#             elif element[0] == "time":
-#                 lista_rounds.append(roundsEnum.EQUIPE2TEMPO)
-#             elif element[0] == "elim":
-#                 lista_rounds.append(roundsEnum.EQUIPE2ELIMINA)
+def tranforma_rounds(matriz, tipo_partida):
+    lista_rounds = [[] for _ in range(tipo_partida)] 
+    if tipo_partida != 1:
+        for i in range(tipo_partida):
+            for element in matriz[i]:
+                if element[0] == "":
+                    if "defuse" in str(element[1]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE2DESARMA.value)
+                    elif "boom" in str(element[1]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE2DETONA.value)
+                    elif "time" in str(element[1]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE2TEMPO.value)
+                    elif "elim" in str(element[1]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE2ELIMINA.value)
+                else:
+                    if "defuse" in str(element[0]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE1DESARMA.value)
+                    elif "boom" in str(element[0]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE1DETONA.value)
+                    elif "time" in str(element[0]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE1TEMPO.value)
+                    elif "elim" in str(element[0]):
+                        lista_rounds[i].append(RoundsEnum.EQUIPE1ELIMINA.value)
+    else:
+        for element in matriz:
+                if element[0] == "":
+                    if "defuse" in str(element[1]):
+                        lista_rounds.append(RoundsEnum.EQUIPE2DESARMA.value)
+                    elif "boom" in str(element[1]):
+                        lista_rounds.append(RoundsEnum.EQUIPE2DETONA.value)
+                    elif "time" in str(element[1]):
+                        lista_rounds.append(RoundsEnum.EQUIPE2TEMPO.value)
+                    elif "elim" in str(element[1]):
+                        lista_rounds.append(RoundsEnum.EQUIPE2ELIMINA.value)
+                else:
+                    if "defuse" in str(element[0]):
+                        lista_rounds.append(RoundsEnum.EQUIPE1DESARMA.value)
+                    elif "boom" in str(element[0]):
+                        lista_rounds.append(RoundsEnum.EQUIPE1DETONA.value)
+                    elif "time" in str(element[0]):
+                        lista_rounds.append(RoundsEnum.EQUIPE1TEMPO.value)
+                    elif "elim" in str(element[0]):
+                        lista_rounds.append(RoundsEnum.EQUIPE1ELIMINA.value)
+
+    return lista_rounds

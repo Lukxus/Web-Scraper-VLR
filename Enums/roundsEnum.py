@@ -1,5 +1,5 @@
 from enum import Enum
-class roundsEnum(Enum):
+class RoundsEnum(Enum):
     EQUIPE1DESARMA = 1
     EQUIPE1DETONA = 2
     EQUIPE1ELIMINA = 3
