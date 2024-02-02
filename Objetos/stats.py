@@ -4,19 +4,20 @@ class Stats():
         self.economy = {}
         for jogador in matrizDesempenho:
             hashmap = {}
-            hashmap["Operador"] = jogador[1]
-            hashmap["R"] = jogador[2]
-            hashmap["ACS"] = jogador[3]
-            hashmap["K"] = jogador[4]
-            hashmap["D"] = jogador[5]
-            hashmap["A"] = jogador[6]
-            hashmap["KDA+/-"] = jogador[7]
-            hashmap["KAST"] = jogador[8]
-            hashmap["ADR"] = jogador[9]
-            hashmap["HS%"] = jogador[10]
-            hashmap["FK"] = jogador[11]
-            hashmap["FD"] = jogador[12]
-            hashmap["FKFD+/-"] = jogador[13]
+            hashmap["Nacionalidade"] = jogador[1]
+            hashmap["Operador"] = jogador[2]
+            hashmap["R"] = jogador[3]
+            hashmap["ACS"] = jogador[4]
+            hashmap["K"] = jogador[5]
+            hashmap["D"] = jogador[6]
+            hashmap["A"] = jogador[7]
+            hashmap["KDA+/-"] = jogador[8]
+            hashmap["KAST"] = jogador[9]
+            hashmap["ADR"] = jogador[10]
+            hashmap["HS%"] = jogador[11]
+            hashmap["FK"] = jogador[12]
+            hashmap["FD"] = jogador[13]
+            hashmap["FKFD+/-"] = jogador[14]
             self.stats[jogador[0]] = hashmap # jogador[0] guarda o nome do jogador
         
     @property
