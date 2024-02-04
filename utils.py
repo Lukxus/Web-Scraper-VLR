@@ -46,9 +46,15 @@ de todas as informações presentes na página da partida;
 Eh necessario fazer a divisao por Overview, Performace e Economy
 """
 def le_partidas(url_partida):
+    print(f"URL: {url_partida}")
     req_partida = requests.get(url_partida)
     html_partida = req_partida.text
     soup_partida = BeautifulSoup(html_partida, "html5lib")
+
+
+    #------------------
+    #Acessando Overview
+    #------------------
 
     #Pegando nome dos times da partida
     nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
@@ -58,10 +64,6 @@ def le_partidas(url_partida):
     print(tipo_partida)
     #Uma partida pode ter mais de um mapa; Assim eh necessario
     #percorrer cada DIV que possui a classe 'vm-stats-gamesnav-item js-map-switch mod-active'
-
-    #------------------
-    #Acessando Overview
-    #------------------
 
     #Pegando Mapas
     mapas = busca_mapas(soup_partida, tipo_partida)
@@ -79,12 +81,79 @@ def le_partidas(url_partida):
     #Fechando Overview
     #------------------
 
+    links_lista = get_links_performance_economy(soup_partida)
+    link_performance = os.getenv("COMPLEMENTO_URL") + links_lista[1]
+    link_economy = os.getenv("COMPLEMENTO_URL") + links_lista[2]
+    
     #------------------
     #Acessando Performace
     #------------------
+    req_partida = requests.get(link_performance)
+    html_partida = req_partida.text
+    soup_partida = BeautifulSoup(html_partida, "html5lib")
+    
+    quadro_all_kills =  busca_quadro_all_kills(soup_partida, tipo_partida)
+    print(quadro_all_kills)
+    
+    #print(quadro_all_kills)
 
+    #------------------
+    #Fechando Performace
+    #------------------
+
+    #------------------
+    #Acessando Economy
+    #------------------
+
+    #busca_economy(soup_partida, tipo_partida)
     exit(1)
 
+
+
+def get_links_performance_economy(soup_partida):
+    links = soup_partida.find_all("div", class_="vm-stats-tabnav")
+    links = links[0]
+    links_a = links.find_all("a")
+    lista_links = []
+    for a in links_a:
+        lista_links.append(a['href'])
+    return lista_links
+
+def  busca_economy(soup_partida, tipo_partida):
+    if tipo_partida == 1:
+        tbody_tags_tr = soup_partida.find_all('tbody')
+        #Separando a primeira metade pois o codigo da tela de overview aparece antes da tela de economy
+        tbody_tags_tr = tbody_tags_tr[(tipo_partida*2):]
+        print(tbody_tags_tr)
+
+
+def busca_quadro_all_kills(soup_partida, tipo_partida):
+    if tipo_partida == 1:
+        table_all_kills = soup_partida.find_all("table", class_ = "wf-table-inset mod-matrix mod-normal")
+        table_all_kills = table_all_kills[0]
+        tbody_table_all_kills = table_all_kills.find("tbody")
+        tr_tbody_table_all_kills = tbody_table_all_kills.find_all("tr")
+        #lista_confronto = []
+        
+        listaTimeUM = []
+        listaTimeDOIS = []
+        confrontos = []
+        for tr in range(len(tr_tbody_table_all_kills)):
+            td = tr_tbody_table_all_kills[tr].find_all("td")
+            for valor_td in range(len(td)):
+                if tr == 0:
+                    if td[valor_td].text.strip() != '':
+                        listaTimeDOIS.append(td[valor_td].text.strip().replace('\n', '').replace('\t', ''))
+                else:
+                    if valor_td == 0:
+                        listaTimeUM.append(td[valor_td].text.strip().replace('\n', '').replace('\t', ''))
+                    else:
+                        div_stats_sq = td[valor_td].find_all("div", class_="stats-sq")
+                        confronto_MT = [element.text.strip().replace('\n', '').replace('\t', '') for element in div_stats_sq]
+                        confrontos.append(confronto_MT[:2])
+        lista_confrontos = [listaTimeUM, listaTimeDOIS, confrontos]
+        return lista_confrontos
+            
 def busca_estatisticas(soup_partida, tipo_partida):
     # PONTO DE ATENÇÂO: Ao buscar o quadro de estatisticas na tela de overview o nome dos elementos se repete na tela de economia
     # Sempre tera dois elementos desse por mapa na tela de economia e dois por mapa na tela de overview
@@ -251,53 +320,55 @@ def busca_rounds(soup_partida, tipo_partida):
         res = []
         for i in range(0, len(lista_scores), 2):
             res.append(lista_rounds[:(int(lista_scores[i]) + int(lista_scores[i+1]))])
-            lista_rounds = lista_rounds[:(int(lista_scores[i]) + int(lista_scores[i+1]))]
-        lista_rounds = res[:]
+            lista_rounds = lista_rounds[(int(lista_scores[i]) + int(lista_scores[i+1])):]
+        lista_rounds = res
     return tranforma_rounds(lista_rounds, tipo_partida)
 
 
 def tranforma_rounds(matriz, tipo_partida):
     lista_rounds = [[] for _ in range(tipo_partida)] 
     if tipo_partida != 1:
-        for i in range(tipo_partida):
-            for element in matriz[i]:
-                if element[0] == "":
-                    if "defuse" in str(element[1]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE2DESARMA.value)
-                    elif "boom" in str(element[1]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE2DETONA.value)
-                    elif "time" in str(element[1]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE2TEMPO.value)
-                    elif "elim" in str(element[1]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE2ELIMINA.value)
-                else:
-                    if "defuse" in str(element[0]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE1DESARMA.value)
-                    elif "boom" in str(element[0]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE1DETONA.value)
-                    elif "time" in str(element[0]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE1TEMPO.value)
-                    elif "elim" in str(element[0]):
-                        lista_rounds[i].append(RoundsEnum.EQUIPE1ELIMINA.value)
+        for i in range(len(matriz)):
+            if matriz[i]:
+                for element in matriz[i]:
+                    if element[0] == "":
+                        if "defuse" in str(element[1]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE2DESARMA.value)
+                        elif "boom" in str(element[1]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE2DETONA.value)
+                        elif "time" in str(element[1]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE2TEMPO.value)
+                        elif "elim" in str(element[1]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE2ELIMINA.value)
+                    else:
+                        if "defuse" in str(element[0]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE1DESARMA.value)
+                        elif "boom" in str(element[0]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE1DETONA.value)
+                        elif "time" in str(element[0]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE1TEMPO.value)
+                        elif "elim" in str(element[0]):
+                            lista_rounds[i].append(RoundsEnum.EQUIPE1ELIMINA.value)
     else:
-        for element in matriz:
-                if element[0] == "":
-                    if "defuse" in str(element[1]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE2DESARMA.value)
-                    elif "boom" in str(element[1]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE2DETONA.value)
-                    elif "time" in str(element[1]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE2TEMPO.value)
-                    elif "elim" in str(element[1]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE2ELIMINA.value)
-                else:
-                    if "defuse" in str(element[0]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE1DESARMA.value)
-                    elif "boom" in str(element[0]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE1DETONA.value)
-                    elif "time" in str(element[0]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE1TEMPO.value)
-                    elif "elim" in str(element[0]):
-                        lista_rounds[0].append(RoundsEnum.EQUIPE1ELIMINA.value)
+        if matriz:
+            for element in matriz:
+                    if element[0] == "":
+                        if "defuse" in str(element[1]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE2DESARMA.value)
+                        elif "boom" in str(element[1]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE2DETONA.value)
+                        elif "time" in str(element[1]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE2TEMPO.value)
+                        elif "elim" in str(element[1]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE2ELIMINA.value)
+                    else:
+                        if "defuse" in str(element[0]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE1DESARMA.value)
+                        elif "boom" in str(element[0]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE1DETONA.value)
+                        elif "time" in str(element[0]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE1TEMPO.value)
+                        elif "elim" in str(element[0]):
+                            lista_rounds[0].append(RoundsEnum.EQUIPE1ELIMINA.value)
 
     return lista_rounds
