@@ -1,4 +1,5 @@
 import requests
+from Economy.service import busca_quadro_compras
 from Enums.TipoPartida import TipoPartida
 from Enums.RoundsEnum import RoundsEnum
 from bs4 import BeautifulSoup
@@ -126,8 +127,17 @@ def le_partidas(url_partida):
     # ------------------
     # Acessando Economy
     # ------------------
+    req_partida = requests.get(link_economy)
+    html_partida = req_partida.text
+    soup_partida = BeautifulSoup(html_partida, "html5lib")
 
-    # busca_economy(soup_partida, tipo_partida)
+    quadro_compras = busca_quadro_compras(soup_partida, tipo_partida)
+    print(quadro_compras)
+    # ------------------
+    # Fechando Economy
+    # ------------------
+
+    
     exit(1)
 
 

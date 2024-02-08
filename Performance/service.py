@@ -13,92 +13,102 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
             jogadas_player_mapa = []
             for element in range(len(td)):
                 if element == 0:  # nome jogador
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                     )
                 elif element == 1:  # agente
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         str(td[element].find("img").get("src"))
                         .split("/")[-1]
                         .split(".")[0]
                     )
                 elif element == 2:  # 2K
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 3:  # 3K
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 4:  # 4K
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 5:  # 5K
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 6:  # 1v1
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 7:  # 1v2
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 8:  # 1v3
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 9:  # 1v4
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 10:  # 1v5
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 11:  # ECON
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
                 elif element == 12:  # PL
-                    jogadas_mapa.append(
+                    jogadas_player_mapa.append(
                         td[element].text.strip().replace("\n", "").replace("\t", "")
                         if td[element].text.strip().replace("\n", "").replace("\t", "")
                         != ""
                         else 0
                     )
+                elif element == 13:  # DE
+                        jogadas_player_mapa.append(
+                            td[element].text.strip().replace("\n", "").replace("\t", "")
+                            if td[element]
+                            .text.strip()
+                            .replace("\n", "")
+                            .replace("\t", "")
+                            != ""
+                            else 0
+                        )
             jogadas_mapa.append(jogadas_player_mapa)
         return [jogadas_mapa]
     else:
@@ -114,20 +124,20 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                 if tr == 0:  # pula para não pegar os nomes das colunas
                     continue
                 td = tr_table_jogadas[tr].find_all("td")
-                jogadas__player_mapa = []
+                jogadas_player_mapa = []
                 for element in range(len(td)):
                     if element == 0:  # nome jogador
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                         )
                     elif element == 1:  # agente
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             str(td[element].find("img").get("src"))
                             .split("/")[-1]
                             .split(".")[0]
                         )
                     elif element == 2:  # 2K
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -137,7 +147,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 3:  # 3K
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -147,7 +157,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 4:  # 4K
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -157,7 +167,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 5:  # 5K
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -167,7 +177,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 6:  # 1v1
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -177,7 +187,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 7:  # 1v2
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -187,7 +197,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 8:  # 1v3
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -197,7 +207,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 9:  # 1v4
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -207,7 +217,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 10:  # 1v5
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -217,7 +227,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 11:  # ECON
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -227,7 +237,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else 0
                         )
                     elif element == 12:  # PL
-                        jogadas_mapa.append(
+                        jogadas_player_mapa.append(
                             td[element].text.strip().replace("\n", "").replace("\t", "")
                             if td[element]
                             .text.strip()
@@ -236,8 +246,19 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             != ""
                             else 0
                         )
-                jogadas_mapa.append(jogadas__player_mapa)
+                    elif element == 13:  # DE
+                        jogadas_player_mapa.append(
+                            td[element].text.strip().replace("\n", "").replace("\t", "")
+                            if td[element]
+                            .text.strip()
+                            .replace("\n", "")
+                            .replace("\t", "")
+                            != ""
+                            else 0
+                        )
+                jogadas_mapa.append(jogadas_player_mapa)
             jogadas_mapas.append(jogadas_mapa)
+        print(len(jogadas_mapas))
         return jogadas_mapas
 
 
