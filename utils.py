@@ -1,5 +1,5 @@
 import requests
-from Economy.service import busca_quadro_compras
+from Economy.service import busca_quadro_compras, get_quadro_tipo_compra_por_round
 from Enums.TipoPartida import TipoPartida
 from Enums.RoundsEnum import RoundsEnum
 from bs4 import BeautifulSoup
@@ -7,9 +7,11 @@ from dotenv import load_dotenv
 import os
 
 from Overview.service import (
+    busca_date,
     busca_estatisticas,
     busca_mapas,
     busca_nome_times,
+    busca_patch,
     busca_rounds,
     busca_tipo_partida,
 )
@@ -77,6 +79,15 @@ def le_partidas(url_partida):
     # Acessando Overview
     # ------------------
 
+    # Pegando data
+
+    date = busca_date(soup_partida)
+    print(date)
+
+    # pegando patch do jogo
+    patch = busca_patch(soup_partida)
+    print(patch)
+
     # Pegando nome dos times da partida
     nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
 
@@ -133,6 +144,9 @@ def le_partidas(url_partida):
 
     quadro_compras = busca_quadro_compras(soup_partida, tipo_partida)
     print(quadro_compras)
+
+    quadro_tipo_compra_por_round = get_quadro_tipo_compra_por_round(soup_partida, tipo_partida)
+    print(quadro_tipo_compra_por_round)
     # ------------------
     # Fechando Economy
     # ------------------

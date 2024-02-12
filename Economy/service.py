@@ -1,5 +1,6 @@
 
 import re
+from Enums.CompraEnum import CompraEnum
 
 def busca_quadro_compras(soup_partida, tipo_partida):
     maps_buys_match = []
@@ -10,8 +11,8 @@ def busca_quadro_compras(soup_partida, tipo_partida):
         table_compras = table_compras[0]
         '''
         0 -> Primerio quadro
-        1 -> legendas
-        2 -> Segundo quadro
+        1 -> Segundo quadro
+        2 -> legendas
         '''
         tr_table_compras = table_compras.find_all("tr")
         buys_match_time1 = []
@@ -45,3 +46,38 @@ def busca_quadro_compras(soup_partida, tipo_partida):
                         buys_match_time2.append([numbers_before_tab,numbers_in_parentheses])
         maps_buys_match.append([buys_match_time1, buys_match_time2])
     return maps_buys_match   
+
+
+def get_quadro_tipo_compra_por_round(soup_partida, tipo_partida):
+    info_round_map_match = []
+    for i in range(tipo_partida):    
+        table = soup_partida.find_all("table", class_="wf-table-inset mod-econ")
+        table = table[1]
+        tr_table = table.find_all("tr")
+        info_round_map = []
+        while(tr_table):
+            td_tr_table = tr_table[0].find_all("td")
+            for td in range(len(td_tr_table)):
+                if td == 0:
+                    continue
+                info_round_map.append([
+                    [transforma_valor_com_K(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="bank")],
+                    [transforma_cat_compras(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="rnd-sq")]
+                ])
+            tr_table.pop(0)
+        info_round_map_match.append(info_round_map)
+            
+
+def transforma_valor_com_K(valor):
+    if valor[-1] == 'k':
+        return float(valor[:-1]) * 1000
+    
+def transforma_cat_compras(valor):
+    if valor == '':
+        return CompraEnum.ECO.value
+    elif valor == "$":
+        return CompraEnum.SEMIECO.value
+    elif valor == '$$':
+        return CompraEnum.SEMIBUY.value
+    elif valor == "$$$":    
+        return CompraEnum.FULLBUY.value

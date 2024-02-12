@@ -1,6 +1,17 @@
+from datetime import datetime
 from Enums.RoundsEnum import RoundsEnum
 from Enums.TipoPartida import TipoPartida
 import re
+
+
+
+def busca_date(soup_partida):
+    date = soup_partida.find("div", class_="moment-tz-convert").get("data-utc-ts")
+    return datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+def busca_patch(soup_partida):
+    patch = soup_partida.find_all("div", style="margin-top: 4px;")[0].text.strip()
+    return patch
 
 
 def busca_estatisticas(soup_partida, tipo_partida):
