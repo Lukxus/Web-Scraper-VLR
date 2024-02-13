@@ -31,7 +31,7 @@ def busca_estatisticas(soup_partida, tipo_partida):
         for j in tr_tag:
             td_tag = j.find_all("td")
             stats_mapa = []
-            if td_tag[1].text.replace("\n", "").replace("\t", "") != "":
+            if td_tag[2].text.strip().replace("\n", "").replace("\t", "") != "":
                 for element in range(len(td_tag)):
                     if element == 0:
                         # print(td_tag[element].text.strip().replace('\n', '').replace('\t', '')) #nome jogador
