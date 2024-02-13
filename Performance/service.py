@@ -258,7 +258,7 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                         )
                 jogadas_mapa.append(jogadas_player_mapa)
             jogadas_mapas.append(jogadas_mapa)
-        print(len(jogadas_mapas))
+        #print(len(jogadas_mapas))
         return jogadas_mapas
 
 

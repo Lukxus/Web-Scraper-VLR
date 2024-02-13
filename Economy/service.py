@@ -6,6 +6,7 @@ def busca_quadro_compras(soup_partida, tipo_partida):
     maps_buys_match = []
     div_table_compras = soup_partida.find_all("div", class_="vm-stats-game")
     div_table_compras = div_table_compras[:-1]
+    div_table_compras = [element for element in div_table_compras if element.text.strip().replace("\n", "").replace("\t", "") != "Stats from this map are not available yet"]
     for i in range(len(div_table_compras)):
         table_compras = div_table_compras[i].find_all("table", class_="wf-table-inset mod-econ")
         table_compras = table_compras[0]
