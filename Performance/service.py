@@ -113,7 +113,10 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
         return [jogadas_mapa]
     else:
         jogadas_mapas = []
-        for i in range(tipo_partida):
+        placar_div = soup_partida.find("div", class_="js-spoiler") 
+        result_1 = int(placar_div.find("span", class_="match-header-vs-score-loser").text.strip().replace("\n", "").replace("\t", ""))
+        result_2 = int(placar_div.find("span", class_="match-header-vs-score-winner").text.strip().replace("\n", "").replace("\t", ""))
+        for i in range(result_1+result_2):
             table_jogadas = soup_partida.find_all(
                 "table", class_="wf-table-inset mod-adv-stats"
             )
@@ -127,135 +130,177 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                 jogadas_player_mapa = []
                 for element in range(len(td)):
                     if element == 0:  # nome jogador
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 1:  # agente
-                        jogadas_player_mapa.append(
-                            str(td[element].find("img").get("src"))
-                            .split("/")[-1]
-                            .split(".")[0]
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                str(td[element].find("img").get("src"))
+                                .split("/")[-1]
+                                .split(".")[0]
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 2:  # 2K
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 3:  # 3K
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 4:  # 4K
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 5:  # 5K
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 6:  # 1v1
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 7:  # 1v2
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 8:  # 1v3
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 9:  # 1v4
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 10:  # 1v5
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 11:  # ECON
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 12:  # PL
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                     elif element == 13:  # DE
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                        if td[element]:
+                            jogadas_player_mapa.append(
+                                td[element].text.strip().replace("\n", "").replace("\t", "")
+                                if td[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                                != ""
+                                else 0
+                            )
+                        else:
+                            jogadas_player_mapa("")
                 jogadas_mapa.append(jogadas_player_mapa)
             jogadas_mapas.append(jogadas_mapa)
         #print(len(jogadas_mapas))

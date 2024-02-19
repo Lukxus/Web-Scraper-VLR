@@ -31,152 +31,151 @@ def busca_estatisticas(soup_partida, tipo_partida):
         for j in tr_tag:
             td_tag = j.find_all("td")
             stats_mapa = []
-            if td_tag[2].text.strip().replace("\n", "").replace("\t", "") != "":
-                for element in range(len(td_tag)):
-                    if element == 0:
-                        # print(td_tag[element].text.strip().replace('\n', '').replace('\t', '')) #nome jogador
-                        stats_mapa.append(
-                            td_tag[element].text.strip().replace("\n", "").replace("\t", "")
-                        )
-                    elif element == 1:
-                        # print(td_tag[element].find('img').get('alt').strip().replace('\n', '').replace('\t', '')) # agente
-                        stats_mapa.append(
-                            td_tag[element]
-                            .find("img")
-                            .get("alt")
-                            .strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                        )
-                    elif element == 2:
-                        R = (
-                            td_tag[element].text.strip().replace("\n", "").replace("\t", "")
-                        )  # R
-                        padrao = r"\d+\.\d{2}"
-                        numeros_formatados = re.findall(padrao, R)
-                        # print(numeros_formatados)
-                        stats_mapa.append(numeros_formatados)
-                    elif element == 3:
-                        ACS_span = td_tag[element].find_all("span")  # ACS
-                        ACS = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in ACS_span
-                        ]
-                        ACS = ACS[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(ACS)
-                        stats_mapa.append(ACS)
-                    elif element == 4:
-                        K_span = td_tag[element].find_all("span")  # K
-                        K = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in K_span
-                        ]
-                        K = K[1:]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(K)
-                        stats_mapa.append(K)
-                    elif element == 5:
-                        D_span = td_tag[element].find_all("span")  # D
-                        D = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in D_span
-                            if "/" not in span
-                        ]
-                        D = D[2:]
-                        # tem uma classe span antes; Dai so não consideramos ela;
-                        # Esse elemento fica no meio de duas "/" que estão em tags span
-                        # Assim precisamos tirar as barras como foi feito na condição do for
-                        # Ao montar a string temos essa lista ['/16412/', '16412', '16', '4', '12']
-                        # as duas primeiras posições são informações indesejadas então são descartadas
-                        # print(D)
-                        stats_mapa.append(D)
-                    elif element == 6:
-                        A_span = td_tag[element].find_all("span")  # A
-                        A = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in A_span
-                        ]
-                        A = A[1:]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(A)
-                        stats_mapa.append(A)
-                    elif element == 7:
-                        KDA_MAISMENOS_span = td_tag[element].find_all("span")  # KDA+/-
-                        KDA_MAISMENOS = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in KDA_MAISMENOS_span
-                        ]
-                        KDA_MAISMENOS = KDA_MAISMENOS[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(KDA_MAISMENOS)
-                        stats_mapa.append(KDA_MAISMENOS)
-                    elif element == 8:
-                        KAST_span = td_tag[element].find_all("span")  # KAST
-                        KAST = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in KAST_span
-                        ]
-                        KAST = KAST[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(KAST)
-                        stats_mapa.append(KAST)
-                    elif element == 9:
-                        ADR_span = td_tag[element].find_all("span")  # ADR
-                        ADR = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in ADR_span
-                        ]
-                        ADR = ADR[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(ADR)
-                        stats_mapa.append(ADR)
-                    elif element == 10:
-                        HS_span = td_tag[element].find_all("span")  # HS%
-                        HS = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in HS_span
-                        ]
-                        HS = HS[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(HS)
-                        stats_mapa.append(HS)
-                    elif element == 11:
-                        FK_span = td_tag[element].find_all("span")  # FK
-                        FK = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in FK_span
-                        ]
-                        FK = FK[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(FK)
-                        stats_mapa.append(FK)
-                    elif element == 12:
-                        FD_span = td_tag[element].find_all("span")  # FD
-                        FD = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in FD_span
-                        ]
-                        FD = FD[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(FD)
-                        stats_mapa.append(FD)
-                    elif element == 13:
-                        FKFD_MAISMENOS_span = td_tag[element].find_all("span")  # FKFD+/-
-                        FKFD_MAISMENOS = [
-                            span.text.strip().replace("\n", "").replace("\t", "")
-                            for span in FKFD_MAISMENOS_span
-                        ]
-                        FKFD_MAISMENOS = FKFD_MAISMENOS[
-                            1:
-                        ]  # tem uma classe span antes; Dai so não consideramos ela
-                        # print(FKFD_MAISMENOS)
-                        stats_mapa.append(FKFD_MAISMENOS)
+            for element in range(len(td_tag)):
+                if element == 0:
+                    # print(td_tag[element].text.strip().replace('\n', '').replace('\t', '')) #nome jogador
+                    stats_mapa.append(
+                        td_tag[element].text.strip().replace("\n", "").replace("\t", "")
+                    )
+                elif element == 1:
+                    # print(td_tag[element].find('img').get('alt').strip().replace('\n', '').replace('\t', '')) # agente
+                    stats_mapa.append(
+                        td_tag[element]
+                        .find("img")
+                        .get("alt")
+                        .strip()
+                        .replace("\n", "")
+                        .replace("\t", "")
+                    )
+                elif element == 2:
+                    R = (
+                        td_tag[element].text.strip().replace("\n", "").replace("\t", "")
+                    )  # R
+                    padrao = r"\d+\.\d{2}"
+                    numeros_formatados = re.findall(padrao, R)
+                    # print(numeros_formatados)
+                    stats_mapa.append(numeros_formatados)
+                elif element == 3:
+                    ACS_span = td_tag[element].find_all("span")  # ACS
+                    ACS = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in ACS_span
+                    ]
+                    ACS = ACS[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(ACS)
+                    stats_mapa.append(ACS)
+                elif element == 4:
+                    K_span = td_tag[element].find_all("span")  # K
+                    K = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in K_span
+                    ]
+                    K = K[1:]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(K)
+                    stats_mapa.append(K)
+                elif element == 5:
+                    D_span = td_tag[element].find_all("span")  # D
+                    D = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in D_span
+                        if "/" not in span
+                    ]
+                    D = D[2:]
+                    # tem uma classe span antes; Dai so não consideramos ela;
+                    # Esse elemento fica no meio de duas "/" que estão em tags span
+                    # Assim precisamos tirar as barras como foi feito na condição do for
+                    # Ao montar a string temos essa lista ['/16412/', '16412', '16', '4', '12']
+                    # as duas primeiras posições são informações indesejadas então são descartadas
+                    # print(D)
+                    stats_mapa.append(D)
+                elif element == 6:
+                    A_span = td_tag[element].find_all("span")  # A
+                    A = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in A_span
+                    ]
+                    A = A[1:]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(A)
+                    stats_mapa.append(A)
+                elif element == 7:
+                    KDA_MAISMENOS_span = td_tag[element].find_all("span")  # KDA+/-
+                    KDA_MAISMENOS = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in KDA_MAISMENOS_span
+                    ]
+                    KDA_MAISMENOS = KDA_MAISMENOS[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(KDA_MAISMENOS)
+                    stats_mapa.append(KDA_MAISMENOS)
+                elif element == 8:
+                    KAST_span = td_tag[element].find_all("span")  # KAST
+                    KAST = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in KAST_span
+                    ]
+                    KAST = KAST[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(KAST)
+                    stats_mapa.append(KAST)
+                elif element == 9:
+                    ADR_span = td_tag[element].find_all("span")  # ADR
+                    ADR = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in ADR_span
+                    ]
+                    ADR = ADR[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(ADR)
+                    stats_mapa.append(ADR)
+                elif element == 10:
+                    HS_span = td_tag[element].find_all("span")  # HS%
+                    HS = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in HS_span
+                    ]
+                    HS = HS[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(HS)
+                    stats_mapa.append(HS)
+                elif element == 11:
+                    FK_span = td_tag[element].find_all("span")  # FK
+                    FK = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in FK_span
+                    ]
+                    FK = FK[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(FK)
+                    stats_mapa.append(FK)
+                elif element == 12:
+                    FD_span = td_tag[element].find_all("span")  # FD
+                    FD = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in FD_span
+                    ]
+                    FD = FD[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(FD)
+                    stats_mapa.append(FD)
+                elif element == 13:
+                    FKFD_MAISMENOS_span = td_tag[element].find_all("span")  # FKFD+/-
+                    FKFD_MAISMENOS = [
+                        span.text.strip().replace("\n", "").replace("\t", "")
+                        for span in FKFD_MAISMENOS_span
+                    ]
+                    FKFD_MAISMENOS = FKFD_MAISMENOS[
+                        1:
+                    ]  # tem uma classe span antes; Dai so não consideramos ela
+                    # print(FKFD_MAISMENOS)
+                    stats_mapa.append(FKFD_MAISMENOS)
             player_stats_mapa.append(stats_mapa)
         matriz_stats[i].append(player_stats_mapa)
     return matriz_stats

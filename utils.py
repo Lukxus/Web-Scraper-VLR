@@ -35,7 +35,7 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
         acessos_thread = []
         for contador in range(pagina_inicial + thread_id, num_paginas, num_threads):
             url_pagina = f"{base_url}?page={contador}"
-            print(f"\nThread {thread_id} acessando {url_pagina}")
+            #print(f"\nThread {thread_id} acessando {url_pagina}")
             acessos_thread.extend(le_retangulos(url_pagina))  
         resultados.extend(acessos_thread)  # Adicionando os resultados à lista resultados
         return acessos_thread
@@ -86,105 +86,112 @@ Eh necessario fazer a divisao por Overview, Performace e Economy
 
 
 def le_partidas(url_partida):
-    print(f"URL: {url_partida}")
-    req_partida = requests.get(url_partida)
-    html_partida = req_partida.text
-    soup_partida = BeautifulSoup(html_partida, "html5lib")
+    try:
+        print(f"URL: {url_partida}")
+        req_partida = requests.get(url_partida)
+        html_partida = req_partida.text
+        soup_partida = BeautifulSoup(html_partida, "html5lib")
 
-    # ------------------
-    # Acessando Overview
-    # ------------------
+        # ------------------
+        # Acessando Overview
+        # ------------------
 
-    # Pegando data
+        # Pegando data
 
-    date = busca_date(soup_partida)
-    # print(date)
+        date = busca_date(soup_partida)
+        # print(date)
 
-    # pegando patch do jogo
-    patch = busca_patch(soup_partida)
-    # print(patch)
-    if patch == None:
+        # pegando patch do jogo
+        patch = busca_patch(soup_partida)
+        # print(patch)
+        if patch == None:
+            return -1
+
+        # Pegando nome dos times da partida
+        nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
+
+        # Pegando tipo da partida
+        tipo_partida = busca_tipo_partida(soup_partida)
+        # print(tipo_partida)
+        # Uma partida pode ter mais de um mapa; Assim eh necessario
+        # percorrer cada DIV que possui a classe 'vm-stats-gamesnav-item js-map-switch mod-active'
+
+        # Pegando Mapas
+        mapas = busca_mapas(soup_partida, tipo_partida)
+        # print(mapas)
+
+        # Pegando rounds da partida
+        rounds = busca_rounds(soup_partida, tipo_partida)
+        # print(rounds)
+
+        # Pegando quadro de estatisticas dos jogadores
+        estatisticas = busca_estatisticas(soup_partida, tipo_partida)
+        # # print(estatisticas)
+
+        # ------------------
+        # Fechando Overview
+        # ------------------
+
+        links_lista = get_links_performance_economy(soup_partida)
+        link_performance = os.getenv("COMPLEMENTO_URL") + links_lista[1]
+        link_economy = os.getenv("COMPLEMENTO_URL") + links_lista[2]
+
+        # ------------------
+        # Acessando Performace
+        # ------------------
+        req_partida = requests.get(link_performance)
+        html_partida = req_partida.text
+        soup_partida = BeautifulSoup(html_partida, "html5lib")
+
+        quadro_all_kills = busca_quadro_all_kills(soup_partida, tipo_partida)
+        # print(quadro_all_kills)
+
+        quadro_jogadas = busca_quadro_jogadas(soup_partida, tipo_partida)
+        # print(quadro_jogadas)
+        # # print(quadro_all_kills)
+
+        # ------------------
+        # Fechando Performace
+        # ------------------
+
+        # ------------------
+        # Acessando Economy
+        # ------------------
+        req_partida = requests.get(link_economy)
+        html_partida = req_partida.text
+        soup_partida = BeautifulSoup(html_partida, "html5lib")
+
+        quadro_compras = busca_quadro_compras(soup_partida, tipo_partida)
+        # print(quadro_compras)
+
+        quadro_tipo_compra_por_round = get_quadro_tipo_compra_por_round(
+            soup_partida, tipo_partida
+        )
+        # print(quadro_tipo_compra_por_round)
+        # ------------------
+        # Fechando Economy
+        # ------------------
+
+        return {
+            'url' : url_partida,
+            'date': date,
+            'patch': patch,
+            'nomePrimeiroTime': nomePrimeiroTime,
+            'nomeSegundoTime': nomeSegundoTime,
+            'tipo_partida': tipo_partida,
+            'mapas': mapas,
+            'rounds'  : rounds,
+            'estatisticas' : estatisticas,
+            'quadro_all_kills': quadro_all_kills,
+            'quadro_jogadas' : quadro_jogadas,
+            'quadro_compras' :quadro_compras,
+            'quadro_tipo_compra_por_round' : quadro_tipo_compra_por_round
+        }
+    except:
+        with open('erros.txt', 'a') as arquivo:
+            # Escreve no arquivo
+            arquivo.write(url_partida)
         return -1
-
-    # Pegando nome dos times da partida
-    nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
-
-    # Pegando tipo da partida
-    tipo_partida = busca_tipo_partida(soup_partida)
-    # print(tipo_partida)
-    # Uma partida pode ter mais de um mapa; Assim eh necessario
-    # percorrer cada DIV que possui a classe 'vm-stats-gamesnav-item js-map-switch mod-active'
-
-    # Pegando Mapas
-    mapas = busca_mapas(soup_partida, tipo_partida)
-    # print(mapas)
-
-    # Pegando rounds da partida
-    rounds = busca_rounds(soup_partida, tipo_partida)
-    # print(rounds)
-
-    # Pegando quadro de estatisticas dos jogadores
-    estatisticas = busca_estatisticas(soup_partida, tipo_partida)
-    # # print(estatisticas)
-
-    # ------------------
-    # Fechando Overview
-    # ------------------
-
-    links_lista = get_links_performance_economy(soup_partida)
-    link_performance = os.getenv("COMPLEMENTO_URL") + links_lista[1]
-    link_economy = os.getenv("COMPLEMENTO_URL") + links_lista[2]
-
-    # ------------------
-    # Acessando Performace
-    # ------------------
-    req_partida = requests.get(link_performance)
-    html_partida = req_partida.text
-    soup_partida = BeautifulSoup(html_partida, "html5lib")
-
-    quadro_all_kills = busca_quadro_all_kills(soup_partida, tipo_partida)
-    # print(quadro_all_kills)
-
-    quadro_jogadas = busca_quadro_jogadas(soup_partida, tipo_partida)
-    # print(quadro_jogadas)
-    # # print(quadro_all_kills)
-
-    # ------------------
-    # Fechando Performace
-    # ------------------
-
-    # ------------------
-    # Acessando Economy
-    # ------------------
-    req_partida = requests.get(link_economy)
-    html_partida = req_partida.text
-    soup_partida = BeautifulSoup(html_partida, "html5lib")
-
-    quadro_compras = busca_quadro_compras(soup_partida, tipo_partida)
-    # print(quadro_compras)
-
-    quadro_tipo_compra_por_round = get_quadro_tipo_compra_por_round(
-        soup_partida, tipo_partida
-    )
-    # print(quadro_tipo_compra_por_round)
-    # ------------------
-    # Fechando Economy
-    # ------------------
-
-    return {
-        'date': date,
-        'patch': patch,
-        'nomePrimeiroTime': nomePrimeiroTime,
-        'nomeSegundoTime': nomeSegundoTime,
-        'tipo_partida': tipo_partida,
-        'mapas': mapas,
-        'rounds'  : rounds,
-        'estatisticas' : estatisticas,
-        'quadro_all_kills': quadro_all_kills,
-        'quadro_jogadas' : quadro_jogadas,
-        'quadro_compras' :quadro_compras,
-        'quadro_tipo_compra_por_round' : quadro_tipo_compra_por_round
-    }
 
 
 def get_links_performance_economy(soup_partida):

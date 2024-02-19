@@ -31,6 +31,8 @@ num_paginas = int(os.getenv("NUMERO_PAGINAS"))
 
 #utils.le_partidas("https://www.vlr.gg/300032/rose-vs-arkangel-esports-challengers-league-2024-north-america-qualifiers-ro128")
 
+#utils.le_partidas("https://www.vlr.gg/280308/sengoku-gaming-vs-fav-gaming-predator-league-japan-2024-sf/?game=145294&tab=performance")
+
 def minha_funcao():    
 #     dataframe = pd.DataFrame(columns=[
 #      'date', 'patch', 'nomePrimeiroTime', 'nomeSegundoTime',
@@ -39,7 +41,7 @@ def minha_funcao():
 #      'quadro_tipo_compra_por_round'
 #     ])
 
-    dados = utils.le_paginas(os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=6, num_threads=3)
+    dados = utils.le_paginas(os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=51, num_threads=5)
 
 
 #     for registro in dados:
