@@ -41,7 +41,7 @@ def minha_funcao():
 #      'quadro_tipo_compra_por_round'
 #     ])
 
-    dados = utils.le_paginas(os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=51, num_threads=5)
+    dados = utils.le_paginas(os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=480, num_threads=10)
 
 
 #     for registro in dados:

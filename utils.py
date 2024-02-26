@@ -190,7 +190,7 @@ def le_partidas(url_partida):
     except:
         with open('erros.txt', 'a') as arquivo:
             # Escreve no arquivo
-            arquivo.write(url_partida)
+            arquivo.write(url_partida + '\n')
         return -1
 
 
