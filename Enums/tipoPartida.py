@@ -5,3 +5,4 @@ class TipoPartida(Enum):
     BO1 = 1
     BO3 = 3
     BO5 = 5
+    MAPS2 = 10

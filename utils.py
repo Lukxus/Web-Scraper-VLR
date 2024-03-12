@@ -1,7 +1,5 @@
 import requests
 from Economy.service import busca_quadro_compras, get_quadro_tipo_compra_por_round
-from Enums.TipoPartida import TipoPartida
-from Enums.RoundsEnum import RoundsEnum
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
