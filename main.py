@@ -58,7 +58,7 @@ def minha_funcao():
     )
 
     dados = utils.le_paginas(
-        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=2, num_threads=1
+        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=487, num_threads=20
     )
 
     # for registro in dados:
