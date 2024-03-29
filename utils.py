@@ -26,21 +26,30 @@ que pelo menos uma página seja lida
 """
 
 
+import threading
+
 def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
     resultados = []
-    
-    def le_paginas_thread(thread_id):
+
+    def le_pagina(url_pagina):
+        print(f"\nAcessando {url_pagina}")
+        return le_retangulos(url_pagina)
+
+    def le_paginas_thread(start_page, end_page):
         acessos_thread = []
-        for contador in range(pagina_inicial + thread_id, num_paginas, num_threads):
-            url_pagina = f"{base_url}?page={contador}"
-            #print(f"\nThread {thread_id} acessando {url_pagina}")
-            acessos_thread.extend(le_retangulos(url_pagina))  
+        for pagina in range(start_page, end_page + 1):
+            url_pagina = f"{base_url}?page={pagina}"
+            acessos_thread.extend(le_pagina(url_pagina))
         resultados.extend(acessos_thread)  # Adicionando os resultados à lista resultados
         return acessos_thread
 
+    pages_per_thread = (num_paginas + num_threads - 1) // num_threads
     threads = []
+
     for i in range(num_threads):
-        thread = threading.Thread(target=le_paginas_thread, args=(i,))
+        start_page = pagina_inicial + i * pages_per_thread
+        end_page = min(pagina_inicial + (i + 1) * pages_per_thread - 1, pagina_inicial + num_paginas - 1)
+        thread = threading.Thread(target=le_paginas_thread, args=(start_page, end_page))
         threads.append(thread)
         thread.start()
 
@@ -48,6 +57,7 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
         thread.join()  # Espera que todas as threads terminem
 
     return resultados
+
 
 
 def le_retangulos(url_pagina):
@@ -85,7 +95,7 @@ Eh necessario fazer a divisao por Overview, Performace e Economy
 
 def le_partidas(url_partida):
     try:
-        print(f"URL: {url_partida}")
+        #print(f"URL: {url_partida}")
         req_partida = requests.get(url_partida)
         html_partida = req_partida.text
         soup_partida = BeautifulSoup(html_partida, "html5lib")
