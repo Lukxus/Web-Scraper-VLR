@@ -134,9 +134,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             for span in KAST_span
                         ]
                         stats_mapa["kast"] = {
-                            "geral": KAST_span[1],
-                            "ataque": KAST_span[2],
-                            "defesa": KAST_span[3],
+                            "geral": KAST[1],
+                            "ataque": KAST[2],
+                            "defesa": KAST[3],
                         }
                     elif element == 9:  # ADR
                         ADR_span = td_tag[element].find_all("span")
@@ -145,9 +145,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             for span in ADR_span
                         ]
                         stats_mapa["adr"] = {
-                            "geral": ADR_span[1],
-                            "ataque": ADR_span[2],
-                            "defesa": ADR_span[3],
+                            "geral": ADR[1],
+                            "ataque": ADR[2],
+                            "defesa": ADR[3],
                         }
                     elif element == 10:  # HS%
                         HS_span = td_tag[element].find_all("span")
