@@ -27,7 +27,7 @@ que pelo menos uma página seja lida
 """
 
 
-def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
+def le_paginas(base_url, pagina_inicial=1, num_paginas=1, num_threads=1):
     resultados = []
 
     def le_pagina(url_pagina):
@@ -44,10 +44,12 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
                     acessos_thread.extend(le_pagina(url_pagina))
                     break  # Se não houve erro, sair do loop
                 except Exception as e:
-                    print(f"Erro ao acessar {url_pagina}. Tentando novamente. Erro: {e}")
+                    with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
+                        arquivo.write(f"Erro ao acessar {url_pagina}. Tentando novamente. Erro: {e} \n")
                     tentativas -= 1
             else:
-                print(f"Não foi possível acessar {url_pagina} após 3 tentativas.")
+                with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
+                    arquivo.write(f"Não foi possível acessar {url_pagina} após 3 tentativas.\n")
 
         resultados.extend(acessos_thread)
         return acessos_thread
@@ -110,7 +112,6 @@ Eh necessario fazer a divisao por Overview, Performace e Economy
 
 def le_partidas(url_partida):
     try:
-        # print(f"URL: {url_partida}")
         req_partida = requests.get(url_partida)
         html_partida = req_partida.text
         soup_partida = BeautifulSoup(html_partida, "html5lib")
@@ -122,11 +123,9 @@ def le_partidas(url_partida):
         # Pegando data
 
         date = busca_date(soup_partida)
-        # print(date)
 
         # pegando patch do jogo
         patch = busca_patch(soup_partida)
-        # print(patch)
         if patch == None:
             return -1
 
@@ -135,21 +134,15 @@ def le_partidas(url_partida):
 
         # Pegando tipo da partida
         tipo_partida = busca_tipo_partida(soup_partida)
-        # print(tipo_partida)
-        # Uma partida pode ter mais de um mapa; Assim eh necessario
-        # percorrer cada DIV que possui a classe 'vm-stats-gamesnav-item js-map-switch mod-active'
 
         # Pegando Mapas
         mapas = busca_mapas(soup_partida, tipo_partida)
-        # print(mapas)
 
         # Pegando rounds da partida
         rounds = busca_rounds(soup_partida, tipo_partida)
-        # print(rounds)
 
         # Pegando quadro de estatisticas dos jogadores
         estatisticas = busca_estatisticas(soup_partida, tipo_partida)
-        # # print(estatisticas)
 
         # ------------------
         # Fechando Overview
@@ -167,11 +160,7 @@ def le_partidas(url_partida):
         soup_partida = BeautifulSoup(html_partida, "html5lib")
 
         quadro_all_kills = busca_quadro_all_kills(soup_partida, tipo_partida)
-        # print(quadro_all_kills)
-
         quadro_jogadas = busca_quadro_jogadas(soup_partida, tipo_partida)
-        # print(quadro_jogadas)
-        # # print(quadro_all_kills)
 
         # ------------------
         # Fechando Performace
@@ -190,7 +179,6 @@ def le_partidas(url_partida):
         quadro_tipo_compra_por_round = get_quadro_tipo_compra_por_round(
             soup_partida, tipo_partida
         )
-        # print(quadro_tipo_compra_por_round)
         # ------------------
         # Fechando Economy
         # ------------------
@@ -210,10 +198,9 @@ def le_partidas(url_partida):
             "quadro_compras": quadro_compras,
             "quadro_tipo_compra_por_round": quadro_tipo_compra_por_round,
         }
-    except:
-        with open("erros.txt", "a") as arquivo:
-            # Escreve no arquivo
-            arquivo.write(url_partida + "\n")
+    except Exception as e:
+        with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
+            arquivo.write(url_partida + f" - {e}\n")
         return -1
 
 
@@ -227,8 +214,12 @@ def get_links_performance_economy(soup_partida):
     return lista_links
 
 
-def limpa_arquivos(arq):
+def escreveHora(arq):
     data_e_hora_atual = datetime.datetime.now()
     data_e_hora_formatada = data_e_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
+    with open(f"{arq}", "a") as arquivo:
+        arquivo.write(f"Execucao de {data_e_hora_formatada} \n\n")
+
+def limpa_arquivos(arq):
     with open(f"{arq}", "w") as f:
-        f.write(f"Execucao de {data_e_hora_formatada} \n\n")
+        f.write("")

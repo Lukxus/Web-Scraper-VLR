@@ -1,2 +1,6 @@
-Execucao de 29/03/2024 14:32:39 
+Execucao de 29/03/2024 18:43:58 
+
+https://www.vlr.gg/322644/after-life-esports-vs-ipgn-challengers-league-oceania-stage-1-lr2 - 'NoneType' object has no attribute 'get'
+https://www.vlr.gg/300479/e-xolos-lazer-vs-mookah-rabbits-challengers-league-2024-latam-north-ace-split-1-w3 - list index out of range
+Execucao de 29/03/2024 18:55:59 
 

@@ -8,6 +8,7 @@ load_dotenv()
 def minha_funcao():
 
     utils.limpa_arquivos(os.getenv("CAMINHO_ERROS_TXT"))
+    utils.escreveHora(os.getenv("CAMINHO_ERROS_TXT"))
     dataframe = pd.DataFrame(
         columns=[
             "date",
@@ -26,7 +27,7 @@ def minha_funcao():
     )
 
     dados = utils.le_paginas(
-        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=1, num_threads=1
+        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=10, num_threads=10
     )
 
     # for registro in dados:
@@ -41,6 +42,7 @@ def minha_funcao():
     dataframe.to_csv(caminho_arquivo_csv, index=False)
     dataframe.to_json(caminho_arquivo_JSON, orient='records')
 
+    utils.escreveHora(os.getenv("CAMINHO_ERROS_TXT"))
 
 # Chamada da função assim que o arquivo for executado
 if __name__ == "__main__":
