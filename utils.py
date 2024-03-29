@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 import threading
+import datetime
 
 
 from Overview.service import (
@@ -26,8 +27,6 @@ que pelo menos uma página seja lida
 """
 
 
-import threading
-
 def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
     resultados = []
 
@@ -39,8 +38,18 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
         acessos_thread = []
         for pagina in range(start_page, end_page + 1):
             url_pagina = f"{base_url}?page={pagina}"
-            acessos_thread.extend(le_pagina(url_pagina))
-        resultados.extend(acessos_thread)  # Adicionando os resultados à lista resultados
+            tentativas = 3  # número máximo de tentativas
+            while tentativas > 0:
+                try:
+                    acessos_thread.extend(le_pagina(url_pagina))
+                    break  # Se não houve erro, sair do loop
+                except Exception as e:
+                    print(f"Erro ao acessar {url_pagina}. Tentando novamente. Erro: {e}")
+                    tentativas -= 1
+            else:
+                print(f"Não foi possível acessar {url_pagina} após 3 tentativas.")
+
+        resultados.extend(acessos_thread)
         return acessos_thread
 
     pages_per_thread = (num_paginas + num_threads - 1) // num_threads
@@ -48,16 +57,22 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=2, num_threads=1):
 
     for i in range(num_threads):
         start_page = pagina_inicial + i * pages_per_thread
-        end_page = min(pagina_inicial + (i + 1) * pages_per_thread - 1, pagina_inicial + num_paginas - 1)
-        thread = threading.Thread(target=le_paginas_thread, args=(start_page, end_page))
-        threads.append(thread)
-        thread.start()
+        end_page = min(
+            pagina_inicial + (i + 1) * pages_per_thread - 1,
+            pagina_inicial + num_paginas - 1,
+        )
+        try:
+            thread = threading.Thread(target=le_paginas_thread, args=(start_page, end_page))
+        except Exception as e:
+            print(f"Erro ao criar thread: {e}")
+        else:
+            threads.append(thread)
+            thread.start()
 
     for thread in threads:
         thread.join()  # Espera que todas as threads terminem
 
     return resultados
-
 
 
 def le_retangulos(url_pagina):
@@ -95,7 +110,7 @@ Eh necessario fazer a divisao por Overview, Performace e Economy
 
 def le_partidas(url_partida):
     try:
-        #print(f"URL: {url_partida}")
+        # print(f"URL: {url_partida}")
         req_partida = requests.get(url_partida)
         html_partida = req_partida.text
         soup_partida = BeautifulSoup(html_partida, "html5lib")
@@ -181,24 +196,24 @@ def le_partidas(url_partida):
         # ------------------
 
         return {
-            'url' : url_partida,
-            'date': date,
-            'patch': patch,
-            'nomePrimeiroTime': nomePrimeiroTime,
-            'nomeSegundoTime': nomeSegundoTime,
-            'tipo_partida': tipo_partida,
-            'mapas': mapas,
-            'rounds'  : rounds,
-            'estatisticas' : estatisticas,
-            'quadro_all_kills': quadro_all_kills,
-            'quadro_jogadas' : quadro_jogadas,
-            'quadro_compras' :quadro_compras,
-            'quadro_tipo_compra_por_round' : quadro_tipo_compra_por_round
+            "url": url_partida,
+            "date": date,
+            "patch": patch,
+            "nomePrimeiroTime": nomePrimeiroTime,
+            "nomeSegundoTime": nomeSegundoTime,
+            "tipo_partida": tipo_partida,
+            "mapas": mapas,
+            "rounds": rounds,
+            "estatisticas": estatisticas,
+            "quadro_all_kills": quadro_all_kills,
+            "quadro_jogadas": quadro_jogadas,
+            "quadro_compras": quadro_compras,
+            "quadro_tipo_compra_por_round": quadro_tipo_compra_por_round,
         }
     except:
-        with open('erros.txt', 'a') as arquivo:
+        with open("erros.txt", "a") as arquivo:
             # Escreve no arquivo
-            arquivo.write(url_partida + '\n')
+            arquivo.write(url_partida + "\n")
         return -1
 
 
@@ -210,3 +225,10 @@ def get_links_performance_economy(soup_partida):
     for a in links_a:
         lista_links.append(a["href"])
     return lista_links
+
+
+def limpa_arquivos(arq):
+    data_e_hora_atual = datetime.datetime.now()
+    data_e_hora_formatada = data_e_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
+    with open(f"{arq}", "w") as f:
+        f.write(f"Execucao de {data_e_hora_formatada} \n\n")
