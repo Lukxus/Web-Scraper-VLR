@@ -1,13 +1,14 @@
 from datetime import datetime
-from Enums.RoundsEnum import RoundsEnum
-from Enums.TipoPartida import TipoPartida
+from Enums.roundsEnum import RoundsEnum
+from Enums.tipoPartida import TipoPartida
 import re
-
+import pandas as pd
 
 
 def busca_date(soup_partida):
     date = soup_partida.find("div", class_="moment-tz-convert").get("data-utc-ts")
     return datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
 
 def busca_patch(soup_partida):
     patch = soup_partida.find("div", style="margin-top: 4px;")
@@ -23,161 +24,266 @@ def busca_estatisticas(soup_partida, tipo_partida):
     tbody_tags_tr = soup_partida.find_all("tbody")
     # Separando a primeira metade pois o codigo da tela de overview aparece antes da tela de economy
     tbody_tags_tr = tbody_tags_tr[: (tipo_partida * 2)]
-    matriz_stats = [[] for _ in range(tipo_partida * 2)]  # vezes pois são dois times
+    matriz_stats = []  # vezes pois são dois times
     for i in range(len(tbody_tags_tr)):
-        tr_tag = tbody_tags_tr[i].find_all("tr")
-        td_tag = []
-        player_stats_mapa = []
-        for j in tr_tag:
-            td_tag = j.find_all("td")
-            stats_mapa = []
-            for element in range(len(td_tag)):
-                if element == 0:
-                    # print(td_tag[element].text.strip().replace('\n', '').replace('\t', '')) #nome jogador
-                    stats_mapa.append(
-                        td_tag[element].text.strip().replace("\n", "").replace("\t", "")
-                    )
-                elif element == 1:
-                    # print(td_tag[element].find('img').get('alt').strip().replace('\n', '').replace('\t', '')) # agente
-                    stats_mapa.append(
-                        td_tag[element]
-                        .find("img")
-                        .get("alt")
-                        .strip()
-                        .replace("\n", "")
-                        .replace("\t", "")
-                    )
-                elif element == 2:
-                    R = (
-                        td_tag[element].text.strip().replace("\n", "").replace("\t", "")
-                    )  # R
-                    padrao = r"\d+\.\d{2}"
-                    numeros_formatados = re.findall(padrao, R)
-                    # print(numeros_formatados)
-                    stats_mapa.append(numeros_formatados)
-                elif element == 3:
-                    ACS_span = td_tag[element].find_all("span")  # ACS
-                    ACS = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in ACS_span
-                    ]
-                    ACS = ACS[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(ACS)
-                    stats_mapa.append(ACS)
-                elif element == 4:
-                    K_span = td_tag[element].find_all("span")  # K
-                    K = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in K_span
-                    ]
-                    K = K[1:]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(K)
-                    stats_mapa.append(K)
-                elif element == 5:
-                    D_span = td_tag[element].find_all("span")  # D
-                    D = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in D_span
-                        if "/" not in span
-                    ]
-                    D = D[2:]
-                    # tem uma classe span antes; Dai so não consideramos ela;
-                    # Esse elemento fica no meio de duas "/" que estão em tags span
-                    # Assim precisamos tirar as barras como foi feito na condição do for
-                    # Ao montar a string temos essa lista ['/16412/', '16412', '16', '4', '12']
-                    # as duas primeiras posições são informações indesejadas então são descartadas
-                    # print(D)
-                    stats_mapa.append(D)
-                elif element == 6:
-                    A_span = td_tag[element].find_all("span")  # A
-                    A = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in A_span
-                    ]
-                    A = A[1:]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(A)
-                    stats_mapa.append(A)
-                elif element == 7:
-                    KDA_MAISMENOS_span = td_tag[element].find_all("span")  # KDA+/-
-                    KDA_MAISMENOS = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in KDA_MAISMENOS_span
-                    ]
-                    KDA_MAISMENOS = KDA_MAISMENOS[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(KDA_MAISMENOS)
-                    stats_mapa.append(KDA_MAISMENOS)
-                elif element == 8:
-                    KAST_span = td_tag[element].find_all("span")  # KAST
-                    KAST = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in KAST_span
-                    ]
-                    KAST = KAST[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(KAST)
-                    stats_mapa.append(KAST)
-                elif element == 9:
-                    ADR_span = td_tag[element].find_all("span")  # ADR
-                    ADR = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in ADR_span
-                    ]
-                    ADR = ADR[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(ADR)
-                    stats_mapa.append(ADR)
-                elif element == 10:
-                    HS_span = td_tag[element].find_all("span")  # HS%
-                    HS = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in HS_span
-                    ]
-                    HS = HS[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(HS)
-                    stats_mapa.append(HS)
-                elif element == 11:
-                    FK_span = td_tag[element].find_all("span")  # FK
-                    FK = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in FK_span
-                    ]
-                    FK = FK[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(FK)
-                    stats_mapa.append(FK)
-                elif element == 12:
-                    FD_span = td_tag[element].find_all("span")  # FD
-                    FD = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in FD_span
-                    ]
-                    FD = FD[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(FD)
-                    stats_mapa.append(FD)
-                elif element == 13:
-                    FKFD_MAISMENOS_span = td_tag[element].find_all("span")  # FKFD+/-
-                    FKFD_MAISMENOS = [
-                        span.text.strip().replace("\n", "").replace("\t", "")
-                        for span in FKFD_MAISMENOS_span
-                    ]
-                    FKFD_MAISMENOS = FKFD_MAISMENOS[
-                        1:
-                    ]  # tem uma classe span antes; Dai so não consideramos ela
-                    # print(FKFD_MAISMENOS)
-                    stats_mapa.append(FKFD_MAISMENOS)
-            player_stats_mapa.append(stats_mapa)
-        matriz_stats[i].append(player_stats_mapa)
+        if i != 2 and i != 3:
+            tr_tag = tbody_tags_tr[i].find_all("tr")
+            td_tag = []
+            player_stats_mapa = []
+            for j in tr_tag:
+                td_tag = j.find_all("td")
+                stats_mapa = {}
+                for element in range(len(td_tag)):
+                    if element == 0:  # nome jogador
+                        try:
+                            stats_mapa["name"] = (
+                                td_tag[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                            )
+                        except:
+                            stats_mapa["name"] = ("NA")
+                    elif element == 1:  # agente
+                        try:
+                            stats_mapa["agente"] = (
+                                td_tag[element]
+                                .find("img")
+                                .get("alt")
+                                .strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                            )
+                        except:
+                            stats_mapa["agente"] = "NA"
+                    elif element == 2:  # R
+                        try:
+                            R = (
+                                td_tag[element]
+                                .text.strip()
+                                .replace("\n", "")
+                                .replace("\t", "")
+                            )
+                            padrao = r"\d+\.\d{2}"
+                            numeros_formatados = re.findall(padrao, R)
+                            stats_mapa["r"] = {
+                                "geral": numeros_formatados[0],
+                                "ataque": numeros_formatados[1],
+                                "defesa": numeros_formatados[2],
+                            }
+                        except:
+                            stats_mapa["r"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 3:  # ACS
+                        try:
+                            ACS_span = td_tag[element].find_all("span")
+                            ACS = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in ACS_span
+                            ]
+                            stats_mapa["acs"] = {
+                                "geral": ACS[1],
+                                "ataque": ACS[2],
+                                "defesa": ACS[3],
+                            }
+                        except:
+                            stats_mapa["acs"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 4:  # K
+                        try:
+                            K_span = td_tag[element].find_all("span")
+                            K = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in K_span
+                            ]
+                            stats_mapa["k"] = {
+                                "geral": K[1],
+                                "ataque": K[2],
+                                "defesa": K[3],
+                            }
+                        except:
+                            stats_mapa["k"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 5:  # D
+                        try:
+                            D_span = td_tag[element].find_all("span")
+                            D = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in D_span
+                                if "/" not in span
+                            ]
+                            # tem uma classe span antes; Dai so não consideramos ela;
+                            # Esse elemento fica no meio de duas "/" que estão em tags span
+                            # Assim precisamos tirar as barras como foi feito na condição do for
+                            # Ao montar a string temos essa lista ['/16412/', '16412', '16', '4', '12']
+                            # as duas primeiras posições são informações indesejadas então são descartadas
+                            stats_mapa["d"] = {
+                                "geral": D[2],
+                                "ataque": D[3],
+                                "defesa": D[4],
+                            }
+                        except:
+                            stats_mapa["d"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 6:  # A
+                        try:
+                            A_span = td_tag[element].find_all("span")
+                            A = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in A_span
+                            ]
+                            stats_mapa["a"] = {
+                                "geral": A[1],
+                                "ataque": A[2],
+                                "defesa": A[3],
+                            }
+                        except:
+                            stats_mapa["a"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 7:  # KDA+/-
+                        try:
+                            KDA_MAISMENOS_span = td_tag[element].find_all("span")
+                            KDA_MAISMENOS = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in KDA_MAISMENOS_span
+                            ]
+                            stats_mapa["kda+-"] = {
+                                "geral": KDA_MAISMENOS[1],
+                                "ataque": KDA_MAISMENOS[2],
+                                "defesa": KDA_MAISMENOS[3],
+                            }
+                        except:
+                            stats_mapa["kda+-"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 8:  # KAST
+                        try:
+                            KAST_span = td_tag[element].find_all("span")
+                            KAST = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in KAST_span
+                            ]
+                            stats_mapa["kast"] = {
+                                "geral": KAST[1],
+                                "ataque": KAST[2],
+                                "defesa": KAST[3],
+                            }
+                        except:
+                            stats_mapa["kast"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 9:  # ADR
+                        try:
+                            ADR_span = td_tag[element].find_all("span")
+                            ADR = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in ADR_span
+                            ]
+                            stats_mapa["adr"] = {
+                                "geral": ADR[1],
+                                "ataque": ADR[2],
+                                "defesa": ADR[3],
+                            }
+                        except:
+                            stats_mapa["adr"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 10:  # HS%
+                        try:
+                            HS_span = td_tag[element].find_all("span")
+                            HS = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in HS_span
+                            ]
+                            stats_mapa["hs"] = {
+                                "geral": HS[1],
+                                "ataque": HS[2],
+                                "defesa": HS[3],
+                            }
+                        except:
+                            stats_mapa["k"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 11:  # FK
+                        try:
+                            FK_span = td_tag[element].find_all("span")
+                            FK = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in FK_span
+                            ]
+                            stats_mapa["fk"] = {
+                                "geral": FK[1],
+                                "ataque": FK[2],
+                                "defesa": FK[3],
+                            }
+                        except:
+                            stats_mapa["fk"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 12:  # FD
+                        try:
+                            FD_span = td_tag[element].find_all("span")
+                            FD = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in FD_span
+                            ]
+                            stats_mapa["fd"] = {
+                                "geral": FD[1],
+                                "ataque": FD[2],
+                                "defesa": FD[3],
+                            }
+                        except:
+                            stats_mapa["fd"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                    elif element == 13:  # FKFD+/-
+                        try:
+                            FKFD_MAISMENOS_span = td_tag[element].find_all("span")
+                            FKFD_MAISMENOS = [
+                                span.text.strip().replace("\n", "").replace("\t", "")
+                                for span in FKFD_MAISMENOS_span
+                            ]
+                            stats_mapa["fkfd+-"] = {
+                                "geral": FKFD_MAISMENOS[1],
+                                "ataque": FKFD_MAISMENOS[2],
+                                "defesa": FKFD_MAISMENOS[3],
+                            }
+                        except:
+                            stats_mapa["fkfd+-"] = {
+                                "geral": "NA",
+                                "ataque": "NA",
+                                "defesa": "NA",
+                            }
+                dataframe = pd.DataFrame(data=stats_mapa)
+                player_stats_mapa.append(dataframe)
+            matriz_stats.append(player_stats_mapa)
     return matriz_stats
 
 
@@ -187,10 +293,12 @@ def busca_tipo_partida(soup_partida):
     valor_enum = None
     if valor_obtido == "Bo1":
         valor_enum = TipoPartida.BO1.value
-    elif valor_obtido == "Bo3":
+    elif valor_obtido == "Bo3" or valor_obtido == "3 Maps":
         valor_enum = TipoPartida.BO3.value
     elif valor_obtido == "Bo5":
         valor_enum = TipoPartida.BO5.value
+    elif valor_obtido == "2 Maps":
+        valor_enum = TipoPartida.MAPS2.value
     return valor_enum
 
 
@@ -199,8 +307,8 @@ def busca_nome_times(soup_partida):
         nome.text.strip().replace("\n", "").replace("\t", "")
         for nome in soup_partida.find_all("div", class_=["wf-title-med"])
     ]
-    #print(listaNomes)
-    #print("----------------------------")
+    # print(listaNomes)
+    # print("----------------------------")
     return listaNomes[0], listaNomes[1]
 
 

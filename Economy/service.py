@@ -51,22 +51,23 @@ def busca_quadro_compras(soup_partida, tipo_partida):
 
 def get_quadro_tipo_compra_por_round(soup_partida, tipo_partida):
     info_round_map_match = []
-    for i in range(tipo_partida):    
-        table = soup_partida.find_all("table", class_="wf-table-inset mod-econ")
-        table = table[1]
-        tr_table = table.find_all("tr")
-        info_round_map = []
-        while(tr_table):
-            td_tr_table = tr_table[0].find_all("td")
-            for td in range(len(td_tr_table)):
-                if td == 0:
-                    continue
-                info_round_map.append([
-                    [transforma_valor_com_K(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="bank")],
-                    [transforma_cat_compras(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="rnd-sq")]
-                ])
-            tr_table.pop(0)
-        info_round_map_match.append(info_round_map)
+    table = soup_partida.find_all("table", class_="wf-table-inset mod-econ")
+    for i in range(len(table)):    
+        if  i % 2 != 0:
+            tr_table = table[i].find_all("tr")
+            info_round_map = []
+            while(tr_table):
+                td_tr_table = tr_table[0].find_all("td")
+                for td in range(len(td_tr_table)):
+                    if td == 0:
+                        continue
+                    info_round_map.append([
+                        [transforma_valor_com_K(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="bank")],
+                        [transforma_cat_compras(element.text.strip().replace("\n", "").replace("\t", "")) for element in td_tr_table[td].find_all("div", class_="rnd-sq")]
+                    ])
+                tr_table.pop(0)
+            info_round_map_match.append(info_round_map)
+    return info_round_map_match
             
 
 def transforma_valor_com_K(valor):
