@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import threading
 import datetime
+import time
 
 
 from Overview.service import (
@@ -42,6 +43,7 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=1, num_threads=1):
             while tentativas > 0:
                 try:
                     acessos_thread.extend(le_pagina(url_pagina))
+                    time.sleep(0.001)
                     break  # Se não houve erro, sair do loop
                 except Exception as e:
                     with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
