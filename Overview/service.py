@@ -43,7 +43,7 @@ def busca_estatisticas(soup_partida, tipo_partida):
                                 .replace("\t", "")
                             )
                         except:
-                            stats_mapa["name"] = "NA"
+                            stats_mapa["name"] = None
                     elif element == 1:  # agente
                         try:
                             stats_mapa["agente"] = (
@@ -55,7 +55,7 @@ def busca_estatisticas(soup_partida, tipo_partida):
                                 .replace("\t", "")
                             )
                         except:
-                            stats_mapa["agente"] = "NA"
+                            stats_mapa["agente"] = None
                     elif element == 2:  # R
                         try:
                             R = (
@@ -73,9 +73,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["r"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 3:  # ACS
                         try:
@@ -91,9 +91,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["acs"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 4:  # K
                         try:
@@ -109,9 +109,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["k"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 5:  # D
                         try:
@@ -133,9 +133,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["d"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 6:  # A
                         try:
@@ -151,9 +151,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["a"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 7:  # KDA+/-
                         try:
@@ -169,9 +169,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["kda+-"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 8:  # KAST
                         try:
@@ -187,9 +187,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["kast"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 9:  # ADR
                         try:
@@ -205,9 +205,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["adr"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 10:  # HS%
                         try:
@@ -223,9 +223,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["k"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 11:  # FK
                         try:
@@ -241,9 +241,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["fk"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 12:  # FD
                         try:
@@ -259,9 +259,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["fd"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                     elif element == 13:  # FKFD+/-
                         try:
@@ -277,9 +277,9 @@ def busca_estatisticas(soup_partida, tipo_partida):
                             }
                         except:
                             stats_mapa["fkfd+-"] = {
-                                "geral": "NA",
-                                "ataque": "NA",
-                                "defesa": "NA",
+                                "geral": None,
+                                "ataque": None,
+                                "defesa": None,
                             }
                 dataframe = pd.DataFrame(data=stats_mapa)
                 player_stats_mapa.append(dataframe)

@@ -28,7 +28,7 @@ def minha_funcao():
     )
 
     dados = utils.le_paginas(
-        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=5, num_threads=5
+        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=1, num_threads=1
     )
     print("_________________")
     print("Fim dos acessos")
@@ -41,8 +41,10 @@ def minha_funcao():
     diretorio_atual = os.getcwd()
 
     caminho_arquivo_csv = os.path.join(diretorio_atual, os.getenv("CAMINHO_CSV"))
+    caminho_arquivo_pickle = os.path.join(diretorio_atual, os.getenv("CAMINHO_PICKLE"))
     caminho_arquivo_JSON = os.path.join(diretorio_atual, os.getenv("CAMINHO_JSON"))
 
+    dataframe.to_pickle(caminho_arquivo_pickle)
     dataframe.to_csv(caminho_arquivo_csv, index=False)
     dataframe.to_json(caminho_arquivo_JSON, orient="records")
 
