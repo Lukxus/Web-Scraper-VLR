@@ -47,11 +47,15 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=1, num_threads=1):
                     break  # Se não houve erro, sair do loop
                 except Exception as e:
                     with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
-                        arquivo.write(f"Erro ao acessar {url_pagina}. Tentando novamente. Erro: {e} \n")
+                        arquivo.write(
+                            f"Erro ao acessar {url_pagina}. Tentando novamente. Erro: {e} \n"
+                        )
                     tentativas -= 1
             else:
                 with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
-                    arquivo.write(f"Não foi possível acessar {url_pagina} após 3 tentativas.\n")
+                    arquivo.write(
+                        f"Não foi possível acessar {url_pagina} após 3 tentativas.\n"
+                    )
 
         resultados.extend(acessos_thread)
         return acessos_thread
@@ -66,7 +70,9 @@ def le_paginas(base_url, pagina_inicial=1, num_paginas=1, num_threads=1):
             pagina_inicial + num_paginas - 1,
         )
         try:
-            thread = threading.Thread(target=le_paginas_thread, args=(start_page, end_page))
+            thread = threading.Thread(
+                target=le_paginas_thread, args=(start_page, end_page)
+            )
         except Exception as e:
             print(f"Erro ao criar thread: {e}")
         else:
@@ -221,6 +227,7 @@ def escreveHora(arq):
     data_e_hora_formatada = data_e_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
     with open(f"{arq}", "a") as arquivo:
         arquivo.write(f"Execucao de {data_e_hora_formatada} \n\n")
+
 
 def limpa_arquivos(arq):
     with open(f"{arq}", "w") as f:

@@ -1,5 +1,6 @@
 import re
 
+
 def busca_quadro_jogadas(soup_partida, tipo_partida):
     if tipo_partida == 1:
         table_jogadas = soup_partida.find_all(
@@ -102,15 +103,12 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                         else 0
                     )
                 elif element == 13:  # DE
-                        jogadas_player_mapa.append(
-                            td[element].text.strip().replace("\n", "").replace("\t", "")
-                            if td[element]
-                            .text.strip()
-                            .replace("\n", "")
-                            .replace("\t", "")
-                            != ""
-                            else 0
-                        )
+                    jogadas_player_mapa.append(
+                        td[element].text.strip().replace("\n", "").replace("\t", "")
+                        if td[element].text.strip().replace("\n", "").replace("\t", "")
+                        != ""
+                        else 0
+                    )
             jogadas_mapa.append(jogadas_player_mapa)
         return [jogadas_mapa]
     else:
@@ -131,7 +129,10 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                         if element == 0:  # nome jogador
                             if td[element]:
                                 jogadas_player_mapa.append(
-                                    td[element].text.strip().replace("\n", "").replace("\t", "")
+                                    td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
                                 )
                             else:
                                 jogadas_player_mapa("")
@@ -145,17 +146,39 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa("")
                         elif element == 2:  # 2K
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-d"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-d").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-d",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-d",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
-                                    valorNumero.group() if valorNumero.group() != "" else 0
+                                    valorNumero.group()
+                                    if valorNumero.group() != ""
+                                    else 0
                                 )
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 3:  # 3K
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-c"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-c").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-c",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-c",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -165,8 +188,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 4:  # 4K
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-b"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-b").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-b",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-b",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -176,8 +209,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 5:  # 5K
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-a"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-a").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-a",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-a",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -187,8 +230,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 6:  # 1v1
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-e"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-e").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-e",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-e",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -198,8 +251,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 7:  # 1v2
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-d"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-d").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-d",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-d",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -209,8 +272,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 8:  # 1v3
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-c"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-c").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-c",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-c",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -220,8 +293,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 9:  # 1v4
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-b"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-b").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-b",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-b",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -231,8 +314,18 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 10:  # 1v5
-                            if td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-a"):
-                                valor = td[element].find("div", class_="stats-sq wf-popable vm-perf-notable mod-a").get_text()
+                            if td[element].find(
+                                "div",
+                                class_="stats-sq wf-popable vm-perf-notable mod-a",
+                            ):
+                                valor = (
+                                    td[element]
+                                    .find(
+                                        "div",
+                                        class_="stats-sq wf-popable vm-perf-notable mod-a",
+                                    )
+                                    .get_text()
+                                )
                                 valorNumero = re.search(r"\d", str(valor))
                                 jogadas_player_mapa.append(
                                     valorNumero.group()
@@ -244,45 +337,54 @@ def busca_quadro_jogadas(soup_partida, tipo_partida):
                         elif element == 11:  # ECON
                             if td[element]:
                                 jogadas_player_mapa.append(
-                                td[element].text.strip().replace("\n", "").replace("\t", "")
-                                if td[element]
-                                .text.strip()
-                                .replace("\n", "")
-                                .replace("\t", "")
-                                != ""
-                                else 0
-                            )
+                                    td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    if td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    != ""
+                                    else 0
+                                )
                             else:
                                 jogadas_player_mapa.append("")
                         elif element == 12:  # PL
                             if td[element]:
                                 jogadas_player_mapa.append(
-                                td[element].text.strip().replace("\n", "").replace("\t", "")
-                                if td[element]
-                                .text.strip()
-                                .replace("\n", "")
-                                .replace("\t", "")
-                                != ""
-                                else 0
-                            )
+                                    td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    if td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    != ""
+                                    else 0
+                                )
                             else:
                                 jogadas_player_mapa("")
                         elif element == 13:  # DE
                             if td[element]:
                                 jogadas_player_mapa.append(
-                                td[element].text.strip().replace("\n", "").replace("\t", "")
-                                if td[element]
-                                .text.strip()
-                                .replace("\n", "")
-                                .replace("\t", "")
-                                != ""
-                                else 0
-                            )
+                                    td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    if td[element]
+                                    .text.strip()
+                                    .replace("\n", "")
+                                    .replace("\t", "")
+                                    != ""
+                                    else 0
+                                )
                             else:
                                 jogadas_player_mapa.append("")
                     jogadas_mapa.append(jogadas_player_mapa)
                 jogadas_mapas.append(jogadas_mapa)
-        #print(len(jogadas_mapas))
+        # print(len(jogadas_mapas))
         return jogadas_mapas
 
 

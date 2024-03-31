@@ -43,7 +43,7 @@ def busca_estatisticas(soup_partida, tipo_partida):
                                 .replace("\t", "")
                             )
                         except:
-                            stats_mapa["name"] = ("NA")
+                            stats_mapa["name"] = "NA"
                     elif element == 1:  # agente
                         try:
                             stats_mapa["agente"] = (
