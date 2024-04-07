@@ -1,3 +1,4 @@
 # Arquivos de log
 Results/
 Storage/
+*.pyc
