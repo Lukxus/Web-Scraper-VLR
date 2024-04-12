@@ -5,6 +5,15 @@ import re
 import pandas as pd
 
 
+def busca_campeonato(soup_partida):
+    elemento = soup_partida.find("div", class_="match-header-event-series").parent.text.replace("\t", "").strip()
+    partes = elemento.split("\n")
+    partes.pop(1)
+    temp = "".join(partes[1:])
+    partes[1] = temp
+    partes.pop()
+    return partes
+
 def busca_date(soup_partida):
     date = soup_partida.find("div", class_="moment-tz-convert").get("data-utc-ts")
     return datetime.strptime(date, "%Y-%m-%d %H:%M:%S")

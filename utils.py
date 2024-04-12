@@ -9,6 +9,7 @@ import time
 
 
 from Overview.service import (
+    busca_campeonato,
     busca_date,
     busca_estatisticas,
     busca_mapas,
@@ -128,6 +129,10 @@ def le_partidas(url_partida):
         # Acessando Overview
         # ------------------
 
+        # Pegando campeonato
+
+        campeonato = busca_campeonato(soup_partida)
+
         # Pegando data
 
         date = busca_date(soup_partida)
@@ -193,6 +198,7 @@ def le_partidas(url_partida):
 
         return {
             "url": url_partida,
+            "campeonato": campeonato,
             "date": date,
             "patch": patch,
             "nomePrimeiroTime": nomePrimeiroTime,

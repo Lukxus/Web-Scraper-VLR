@@ -6,12 +6,16 @@ import pandas as pd
 load_dotenv()
 
 
+
+
 def minha_funcao():
 
     utils.limpa_arquivos(os.getenv("CAMINHO_ERROS_TXT"))
     utils.escreveHora(os.getenv("CAMINHO_ERROS_TXT"))
     dataframe = pd.DataFrame(
         columns=[
+            "url",
+            "campeonato"
             "date",
             "patch",
             "nomePrimeiroTime",
