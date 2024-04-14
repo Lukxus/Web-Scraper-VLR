@@ -290,8 +290,8 @@ def busca_estatisticas(soup_partida, tipo_partida):
                                 "ataque": None,
                                 "defesa": None,
                             }
-                dataframe = pd.DataFrame(data=stats_mapa)
-                player_stats_mapa.append(dataframe)
+                #dataframe = pd.DataFrame(data=stats_mapa)
+                player_stats_mapa.append(stats_mapa)
             matriz_stats.append(player_stats_mapa)
     return matriz_stats
 
