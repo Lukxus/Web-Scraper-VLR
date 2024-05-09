@@ -32,7 +32,29 @@ def busca_estatisticas(soup_partida, tipo_partida):
     # Não foi possivel pegar esses elemetos separados então teremos que tratar a metade dos itens achados em cada função
     tbody_tags_tr = soup_partida.find_all("tbody")
     # Separando a primeira metade pois o codigo da tela de overview aparece antes da tela de economy
-    tbody_tags_tr = tbody_tags_tr[: (tipo_partida * 2)]
+    
+    """
+    Tratamento antigo; Essa linha de codigo abaixo foi removida devido a partidas MD3 estarem sendo lidas da seguinte forma:
+    0 - time 1 mapa 1
+    1 - time 2 mapa 1
+    2 - time 1 overview
+    3 - time 2 overview
+    4 - time 1 mapa 2
+    5 - time 1 mapa 2
+    6 - time 1 mapa 3
+    7 - time 2 mapa 3
+
+    Apos verificar em varias partidas, verificamos que os indices 2 e 3 da lista tbody_tags_tr sempre carregam dados de all maps
+    """
+    #tbody_tags_tr = tbody_tags_tr[: (tipo_partida * 2)]
+    tr = len(tbody_tags_tr)
+    if tr == 2: #MD1
+        tbody_tags_tr = tbody_tags_tr[: (tipo_partida * 2)]
+    else:
+        aux = []
+        for ind in range(len(tbody_tags_tr)):
+            if ind != 2 and ind != 3:
+                aux.append(tbody_tags_tr[ind])
     matriz_stats = []  # vezes pois são dois times
     for i in range(len(tbody_tags_tr)):
         if i != 2 and i != 3:
