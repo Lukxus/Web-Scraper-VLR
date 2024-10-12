@@ -335,7 +335,7 @@ def busca_mapas(soup_partida, tipo_partida):
             style="font-weight: 700; font-size: 20px; text-align: center; position: relative; margin-bottom: 3px;",
         )
         mapasAux = mapasAux[0]
-        mapas.append(mapasAux.text.strip())
+        mapas.append(mapasAux.text.strip().split('\t')[0])
     return mapas
 
 
