@@ -139,8 +139,8 @@ def le_partidas(url_partida):
 
         # pegando patch do jogo
         patch = busca_patch(soup_partida)
-        if patch == None:
-            return -1
+        # if patch == None:
+        #     return -1
 
         # Pegando nome dos times da partida
         nomePrimeiroTime, nomeSegundoTime = busca_nome_times(soup_partida)
@@ -213,7 +213,18 @@ def le_partidas(url_partida):
             "quadro_tipo_compra_por_round": quadro_tipo_compra_por_round,
         }
     except Exception as e:
-        with open(os.getenv("CAMINHO_ERROS_TXT"), "a") as arquivo:
+        # Obtenha o caminho do arquivo de erros a partir da variável de ambiente
+        caminho_arquivo = os.getenv("CAMINHO_ERROS_TXT")
+        
+        # Extrai o diretório do caminho do arquivo
+        pasta = os.path.dirname(caminho_arquivo)
+
+        # Verifica se o diretório existe, e se não, cria-o
+        if not os.path.exists(pasta):
+            os.makedirs(pasta)  # Cria o diretório e subdiretórios, se necessário
+
+        # Abre o arquivo em modo de append (adiciona ao final) e escreve o erro
+        with open(caminho_arquivo, "a") as arquivo:
             arquivo.write(url_partida + f" - {e}\n")
         return -1
 

@@ -36,7 +36,7 @@ def minha_funcao():
     )
 
     dados = utils.le_paginas(
-        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=1, num_threads=1
+        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=532, num_threads=12
     )
     print("_________________")
     print("Fim dos acessos")
