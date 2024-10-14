@@ -5,17 +5,17 @@ import pandas as pd
 
 load_dotenv()
 
-
-#https://www.vlr.gg/9398/reality-rift-vs-paper-rex-champions-tour-malaysia-singapore-stage-1-challengers-1-ro16
-#https://www.vlr.gg/316456/dsyre-vs-vx300-gaming-challengers-league-2024-italy-rinascimento-split-1-playoffs-uf
-#x = utils.le_partidas("https://www.vlr.gg/316456/dsyre-vs-vx300-gaming-challengers-league-2024-italy-rinascimento-split-1-playoffs-uf")
-#print(len(x["estatisticas"]))
-
-
 def minha_funcao():
+
+    caminho_arquivo = os.getenv("CAMINHO_ERROS_TXT")
+    pasta = os.path.dirname(caminho_arquivo)
+    
+    if not os.path.exists(pasta):
+        os.makedirs(pasta)
 
     utils.limpa_arquivos(os.getenv("CAMINHO_ERROS_TXT"))
     utils.escreveHora(os.getenv("CAMINHO_ERROS_TXT"))
+    
     dataframe = pd.DataFrame(
         columns=[
             "url",
