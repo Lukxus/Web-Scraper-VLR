@@ -7,7 +7,15 @@ load_dotenv()
 
 
 def minha_funcao():
+    
+    caminho_arquivo = os.getenv("CAMINHO_ERROS_TXT")
+        
+    pasta = os.path.dirname(caminho_arquivo)
 
+    # Verifica se o diretório existe, e se não, cria-o
+    if not os.path.exists(pasta):
+        os.makedirs(pasta)  # Cria o diretório e subdiretórios, se necessário
+        
     utils.limpa_arquivos(os.getenv("CAMINHO_ERROS_TXT"))
     utils.escreveHora(os.getenv("CAMINHO_ERROS_TXT"))
     dataframe = pd.DataFrame(
@@ -28,7 +36,7 @@ def minha_funcao():
     )
 
     dados = utils.le_paginas(
-        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=1, num_threads=1
+        os.getenv("BASE_URL"), pagina_inicial=1, num_paginas=532, num_threads=20
     )
     print("_________________")
     print("Fim dos acessos")
