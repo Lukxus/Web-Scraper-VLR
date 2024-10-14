@@ -325,8 +325,10 @@ def busca_mapas(soup_partida, tipo_partida):
             "div", class_=["vm-stats-gamesnav-item", "js-map-switch"]
         )
         for i in range(1, len(mapasDiv)):
-            mapas.append(mapasDiv[i].find("div").get_text(strip=True)[1:])
-            # precisei colocar esse [1:] para não pegar o primeiro elemento pois um elemento span estava colocando o texto dele junto
+            mapa = mapasDiv[i].find("div").get_text(strip=True)[1:]
+            if mapa != "Map Advantage":
+                mapas.append(mapa)
+                # precisei colocar esse [1:] para não pegar o primeiro elemento pois um elemento span estava colocando o texto dele junto
     else:
         mapasDiv = soup_partida.find_all("div", class_="map")
         mapasDiv = mapasDiv[0]
